@@ -28,7 +28,7 @@ Both commands should print a version number; Node must be **22.12 or newer**. If
 
 If `node -v` reports a version older than 22.12, upgrade Node.js using the official installation instructions (or select a supported version using your existing version manager), reopen the terminal and repeat both checks. In a managed course cloud environment, ask the instructor/TA for the supported upgrade route rather than replacing the shared runtime yourself.
 
-Open a terminal in the repository root (the folder containing `package.json` and `package-lock.json`), then run these commands one at a time. Continue only after the previous command succeeds:
+Open a terminal in the repository root (the folder containing `package.json` and `package-lock.json`). These commands assume a fresh checkout. If your checkout uses the `node_modules` junction described below, do not run `npm ci` there; download or clone the repository into a new folder and run the commands there instead. This is because `npm ci` removes any existing `node_modules/`. Then run these commands one at a time. Continue only after the previous command succeeds:
 
 ```sh
 npm ci
