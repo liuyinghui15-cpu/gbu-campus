@@ -17,7 +17,18 @@ Night audio shuts down completely on victory, defeat, quit or exit. Pause, mute 
 
 ## Run locally
 
-For a fresh checkout, install Node 22.12 or newer, open a terminal in the repository root, then run:
+For a fresh checkout, install Node 22.12 or newer using the [official Node.js download instructions](https://nodejs.org/en/download). npm is normally included with Node.js. Open a new terminal after installation and check:
+
+```sh
+node -v
+npm -v
+```
+
+Both commands should print a version number; Node must be **22.12 or newer**. If either command reports `command not found` or `is not recognized`, stop before continuing. Close and reopen the terminal (and your editor's terminal, if applicable). If it still fails, check the Node.js installation and whether Node.js and npm are available through your system's `PATH`; seek instructor/TA support if needed. A version check confirms that the commands are available, not that the game has been built successfully.
+
+If `node -v` reports a version older than 22.12, upgrade Node.js using the official installation instructions (or select a supported version using your existing version manager), reopen the terminal and repeat both checks. In a managed course cloud environment, ask the instructor/TA for the supported upgrade route rather than replacing the shared runtime yourself.
+
+Open a terminal in the repository root (the folder containing `package.json` and `package-lock.json`), then run these commands one at a time. Continue only after the previous command succeeds:
 
 ```sh
 npm ci
@@ -25,7 +36,24 @@ npm run build
 npm start
 ```
 
+- `npm ci` installs the dependencies recorded in the existing lockfile for a reproducible setup. Unlike `npm install`, it requires a lockfile matching `package.json`, removes any existing `node_modules/` before installation, and does not update `package.json` or the lockfile. Keep the project's existing lockfile; do not delete it or substitute `npm install` just to bypass an error.
+- The first dependency installation normally needs internet access to download packages, unless the needed packages are already cached. The offline statement below applies to the completed game build, not a fresh dependency download.
+- If installation fails with a network, proxy or registry error (for example, `ECONNRESET`), save the exact error and check your connection and course-provided proxy/registry settings. You can inspect the configured registry with `npm config get registry`. If the problem persists, ask the instructor/TA for help rather than changing dependencies or disabling certificate checks. Do not share credentials in error reports.
+- `npm run build` builds both modes. `npm start` serves that completed build; it does not rebuild changed source files.
+
+### What success looks like
+
+| Command | Expected result |
+|---|---|
+| `npm ci` | Finishes with exit code 0 and returns to the terminal prompt; normally prints an installation/audit summary. Exact wording and package counts vary. Audit warnings are separate from installation failure: record and review them; do not blindly run `npm audit fix --force`. |
+| `npm run build` | Finishes with exit code 0 and returns to the prompt. Vite reports builds for both modes, followed by `Ready: ... deployment files, ...`. Warnings alone do not prove failure or success; check the exit status and then inspect the game. |
+| `npm start` | Prints `Campus experience is ready.` and **keeps running**. It is serving the game, not stuck. Leave that terminal open and use your browser; press **Ctrl+C** in that terminal when you want to stop it. |
+
+If startup prints `Campus startup failed. Check the completed build and port configuration.`, that message does not identify a unique cause. First confirm that the build succeeded and both `dist/index.html` and `dist/night/index.html` exist. Then check whether another service is using your port; do not start a second copy on the same port. Use the `PORT` instructions below if a different port is needed. If it still fails, bring the command you ran, the exact error, Node/npm versions and the last successful step to the instructor/TA, without credentials. A dependency download error belongs to the installation step; a startup failure after a successful build needs build/port checks, not an automatic dependency reinstall.
+
 Open http://127.0.0.1:5190/ for the day tour or http://127.0.0.1:5190/night/ for the night game. Run all commands from the repository root; the root build packages both modes together. Rebuild after changing source files. The completed build works without internet access. Fonts, geometry, materials and sound generation are local.
+
+**Cloud/remote workspaces:** `127.0.0.1` in your computer's browser refers to your computer, not the remote workspace. Use the platform's supported port forwarding/preview route, or ask the instructor/TA. A preview proxy under a URL subpath may also require asset and navigation path adaptation; an unstyled page is not a successful game check. This README does not add or guarantee cloud-proxy compatibility. After opening the correct route, check that both day and night pages render and that a control works; a server-ready message alone is not enough.
 
 On Windows, after the first build you can also double-click **Start-GBU-Campus.cmd**. It uses the existing Codex Node runtime when available, otherwise Node from PATH, and opens the game.
 
